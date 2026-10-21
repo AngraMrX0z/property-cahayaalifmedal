@@ -61,8 +61,22 @@ if (typeDialog && contactForm) {
     }
   };
 
+  const selectPropertyInterest = selectedInterest => {
+    const interestField = contactForm.elements.minat;
+    if (![...interestField.options].some(item => item.value === selectedInterest)) {
+      interestField.add(new Option(selectedInterest, selectedInterest, true, true));
+    }
+    interestField.value = selectedInterest;
+    contactForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    contactForm.elements.nama.focus({ preventScroll: true });
+  };
+
   document.querySelectorAll('button.card').forEach(card => {
     card.addEventListener('click', () => {
+      if (card.dataset.interest) {
+        selectPropertyInterest(card.dataset.interest);
+        return;
+      }
       const property = card.getAttribute('aria-label').replace('Pilih properti ', '');
       const config = propertyTypes[property];
       typeDialog.querySelector('#type-dialog-title').textContent = `Pilih Tipe ${property}`;
@@ -91,14 +105,8 @@ if (typeDialog && contactForm) {
   typeDialog.addEventListener('click', event => {
     const option = event.target.closest('.type-option');
     if (option) {
-      const selectedInterest = option.dataset.property;
-      if (![...contactForm.elements.minat.options].some(item => item.value === selectedInterest)) {
-        contactForm.elements.minat.add(new Option(selectedInterest, selectedInterest, true, true));
-      }
-      contactForm.elements.minat.value = selectedInterest;
+      selectPropertyInterest(option.dataset.property);
       typeDialog.close();
-      contactForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      contactForm.elements.nama.focus({ preventScroll: true });
     }
   });
 }
@@ -119,23 +127,23 @@ if (imageLightbox) {
   };
 
   propertyImages.forEach(image => {
+    if (image.closest('.card')) return;
+
     image.addEventListener('click', event => {
       event.stopPropagation();
       openImageLightbox(image);
     });
 
-    if (!image.closest('.card')) {
-      image.tabIndex = 0;
-      image.setAttribute('role', 'button');
-      image.setAttribute('aria-label', `Perbesar gambar: ${image.alt}`);
-      image.setAttribute('aria-haspopup', 'dialog');
-      image.addEventListener('keydown', event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          openImageLightbox(image);
-        }
-      });
-    }
+    image.tabIndex = 0;
+    image.setAttribute('role', 'button');
+    image.setAttribute('aria-label', `Perbesar gambar: ${image.alt}`);
+    image.setAttribute('aria-haspopup', 'dialog');
+    image.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openImageLightbox(image);
+      }
+    });
   });
 
   lightboxClose.addEventListener('click', () => imageLightbox.close());
