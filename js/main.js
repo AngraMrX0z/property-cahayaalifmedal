@@ -29,6 +29,17 @@ const typeDialog = document.querySelector('.type-dialog');
 if (typeDialog && contactForm) {
   const typeOptions = typeDialog.querySelector('.type-options');
   const propertyTypes = {
+    'Cupu Mekar Indah': {
+      images: [
+        'images/Cupu%20Mekar%20Indah%2021x25.jpg',
+        'images/Cupu%20mekar%20indah%2025x30.jpg'
+      ],
+      promotion: 'Promo terbatas untuk 15 unit hunian.',
+      types: [
+        { title: 'Tipe 21 × 25', description: 'Luas tanah 21 m² · Luas bangunan 25 m²', price: 'Rp 130 juta' },
+        { title: 'Tipe 25 × 30', description: 'Luas tanah 30 m² · Luas bangunan 25 m²', price: 'Rp 140 juta' }
+      ]
+    },
     'Bahuan Mekar Indah': {
       images: [
         'images/Bahuan%20mekar%20indah.jpeg',
@@ -79,8 +90,10 @@ if (typeDialog && contactForm) {
       }
       const property = card.getAttribute('aria-label').replace('Pilih properti ', '');
       const config = propertyTypes[property];
+      if (!config) return;
       typeDialog.querySelector('#type-dialog-title').textContent = `Pilih Tipe ${property}`;
-      typeOptions.replaceChildren(...config.types.map((type, index) => {
+      typeDialog.querySelector('.type-dialog-header p').textContent = config.promotion || 'Pilih tipe hunian yang ingin Anda tanyakan kepada tim marketing.';
+      const choices = config.types.map((type, index) => {
         const typeName = type.title;
         const option = document.createElement('button');
         option.className = 'type-option';
@@ -89,7 +102,15 @@ if (typeDialog && contactForm) {
         const image = config.images ? config.images[index] : config.image;
         option.innerHTML = `<img src="${image}" alt="${typeName} ${property}"><span class="type-option-details"><strong>${typeName}</strong><small>${type.description}</small>${type.price ? `<strong class="type-option-price">${type.price}</strong>` : ''}</span><span class="type-option-arrow" aria-hidden="true">→</span>`;
         return option;
-      }));
+      });
+      if (property === 'Cupu Mekar Indah') {
+        const promo = document.createElement('aside');
+        promo.className = 'type-promo';
+        promo.setAttribute('aria-label', 'Promo cashback');
+        promo.innerHTML = '<span class="type-promo-kicker">PROMO TERBATAS</span><strong class="type-promo-title">Cashback</strong><span class="type-promo-copy">Kesempatan spesial untuk memiliki hunian impian.</span><span class="type-promo-limit">Maksimal <b>15 unit</b><br>untuk tipe 21 × 25 dan 25 × 30</span>';
+        choices.splice(2, 0, promo);
+      }
+      typeOptions.replaceChildren(...choices);
       typeDialog.showModal();
     });
   });
