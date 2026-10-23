@@ -1,5 +1,7 @@
 # Property Cahaya Alif Medal - Website Penjualan Properti CAM
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e2758c00-fb88-4fdd-9f3e-8da38b3f16c4/deploy-status)](https://app.netlify.com/projects/cahayaalifmedal/deploys)
+
 > Website statis untuk menampilkan pilihan properti Cahaya Alif Medal (CAM), foto dan denah rumah, harga, serta kontak marketing WhatsApp.
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
